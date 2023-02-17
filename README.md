@@ -46,7 +46,7 @@ I tried to keep the code as one-to-one as possible:
 
 These scripts are designed to be used with the very useful online scheduling solver tool: https://boonsuen.com/process-scheduling-solver. Remember to set the algorithm to **Round-Robin, RR**. This tool helps visualize the order of your processes with a **Gantt Chart**.
 
-Your workflow can look like this:
+Your workflow could look like this:
 
 
 ### (1) Convert Input File to Input Lists
@@ -64,13 +64,19 @@ $ ./to_solver processes.txt
 ### (2) Parse Webpage for Expected Output
 
 
-Capture the output of the online solver and paste it into some dummy file. My [solver.py](solver.py) script parses the raw copy-pasted text and calculates the correct average response and waiting time, in the exact format of ./rr's output:
+> ⚠️ For this, you'll need to perform a one-time [bookmarklet](https://en.wikipedia.org/wiki/Bookmarklet) setup:
+>
+> 1. Create a new bookmark. It can be on any page - it doesn't matter because you're going to replace the URL anyway.
+> 2. Edit the bookmark you just made. Replace the URL with the line in the [copyHTML.js](copyHTML.js) file. Name it whatever you like e.g. "Copy HTML".
+> 3. Save the bookmarklet and try using it by clicking on it. Hit Ctrl+V into any buffer and you'll see that your clipboard holds the entire HTML of the current webpage!
+
+After running the solver, paste the HTML into some dummy file. My [solver.py](solver.py) script parses the HTML to extract the Gantt Chart and table to calculate the correct average response and waiting time, in the exact format of ./rr's output:
 
 ```console
-$ touch output.txt
-$ # Hit Ctrl+A Ctrl+C on the solver webpage...
-$ # Ctrl+V that into output.txt...
-$ ./solver.py output.txt
+$ touch output.html
+$ # Run the solver and the bookmarklet...
+$ # Ctrl+V into output.html and save...
+$ ./solver.py output.html
 Average waiting time: 7.00
 Average response time: 2.75
 ```
