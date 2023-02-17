@@ -70,7 +70,9 @@ def get_process_times(gantt_chart: str, table_string: str
     """
     gantt_tokens = gantt_chart.splitlines()
     num_tokens = len(gantt_tokens)
-    pids = gantt_tokens[:num_tokens // 2]
+
+    # The "PID" is "_" for slots where no process is executing
+    pids = [pid for pid in gantt_tokens[:num_tokens // 2] if pid != "_"]
     times = [int(num) for num in gantt_tokens[num_tokens // 2:]]
 
     times_mapping = {pid: ProcessTimes() for pid in pids}
