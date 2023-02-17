@@ -80,28 +80,18 @@ def extract_gantt_and_table(raw_text: str) -> Tuple[str, str]:
     return (gantt_chart, table_string)
 
 
-def parse_gantt_chart(gantt_chart: str) -> Tuple[List[str], List[int]]:
-    gantt_tokens = gantt_chart.splitlines()
-    num_tokens = len(gantt_tokens)
-
-    # The "PID" is "_" for slots where no process is executing
-    pids = [pid for pid in gantt_tokens[:num_tokens // 2] if pid != "_"]
-    times = [int(num) for num in gantt_tokens[num_tokens // 2:]]
-
-    # TODO.
-
-    return (pids, times)
+def parse_gantt_chart(gantt_chart: str, num_entries: int
+                      ) -> Tuple[List[str], List[int]]:
+    return ([], [])  # TODO.
 
 
-def get_process_times(gantt_chart: str, table_string: str
+def get_process_times(pids: List[str], times: List[int], table_string: str
                       ) -> Tuple[ProcessTimes]:
     """
-    Parse the text corresponding to the Gantt Chart and the output table
-    to extract and return a collection of (arrival time, first execution
-    time, waiting time) bundles for every process.
+    Given the parsed PIDs and times from the Gantt chart, parse the
+    output table to extract and return a collection of (arrival time,
+    first execution time, waiting time) bundles for every process.
     """
-    pids, times = parse_gantt_chart(gantt_chart)
-
     times_mapping = {pid: ProcessTimes() for pid in pids}
 
     # Extract the time at which each process was first executed.  This
@@ -152,7 +142,9 @@ def main() -> None:
         sys.exit(1)
 
     gantt_chart, table_string = extract_gantt_and_table(raw_text)
-    process_times = get_process_times(gantt_chart, table_string)
+    num_entries = get_num_processes(raw_text)
+    pids, times = parse_gantt_chart(gantt_chart, num_entries)
+    process_times = get_process_times(pids, times, table_string)
     size = len(process_times)
 
     # This is already provided below the table, but just for convenient
