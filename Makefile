@@ -7,7 +7,8 @@ TAR_ARGS = -czvf ${OUTPUT_PATH}
 tarball: ${OUTPUT_PATH}
 
 ${OUTPUT_PATH}: ${PYTHON_SCRIPTS} ${BASH_SCRIPTS}
-	tar ${TAR_ARGS} $^
+	@chmod +x $^
+	@tar ${TAR_ARGS} $^
 
 .PHONY: clean
 
