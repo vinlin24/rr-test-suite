@@ -1,12 +1,12 @@
 PYTHON_SCRIPTS := $(wildcard *.py)
-BASH_SCRIPTS := from_solver to_solver
+OTHER_SCRIPTS := from_solver to_solver copyHTML.js
 
 OUTPUT_PATH = dist/test_suite.tgz
 TAR_ARGS = -czvf ${OUTPUT_PATH}
 
 tarball: ${OUTPUT_PATH}
 
-${OUTPUT_PATH}: ${PYTHON_SCRIPTS} ${BASH_SCRIPTS}
+${OUTPUT_PATH}: ${PYTHON_SCRIPTS} ${OTHER_SCRIPTS}
 	@chmod +x $^
 	@tar ${TAR_ARGS} $^
 
