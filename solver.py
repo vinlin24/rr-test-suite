@@ -16,7 +16,7 @@ after running the solver.
 import re
 import sys
 from dataclasses import dataclass
-from typing import Tuple
+from typing import List, Tuple
 
 __author__ = "Vincent Lin"
 
@@ -70,6 +70,19 @@ def extract_gantt_and_table(raw_text: str) -> Tuple[str, str]:
     return (gantt_chart, table_string)
 
 
+def parse_gantt_chart(gantt_chart: str) -> Tuple[List[str], List[int]]:
+    gantt_tokens = gantt_chart.splitlines()
+    num_tokens = len(gantt_tokens)
+
+    # The "PID" is "_" for slots where no process is executing
+    pids = [pid for pid in gantt_tokens[:num_tokens // 2] if pid != "_"]
+    times = [int(num) for num in gantt_tokens[num_tokens // 2:]]
+
+    # TODO.
+
+    return (pids, times)
+
+
 def get_process_times(gantt_chart: str, table_string: str
                       ) -> Tuple[ProcessTimes]:
     """
@@ -77,12 +90,7 @@ def get_process_times(gantt_chart: str, table_string: str
     to extract and return a collection of (arrival time, first execution
     time, waiting time) bundles for every process.
     """
-    gantt_tokens = gantt_chart.splitlines()
-    num_tokens = len(gantt_tokens)
-
-    # The "PID" is "_" for slots where no process is executing
-    pids = [pid for pid in gantt_tokens[:num_tokens // 2] if pid != "_"]
-    times = [int(num) for num in gantt_tokens[num_tokens // 2:]]
+    pids, times = parse_gantt_chart(gantt_chart)
 
     times_mapping = {pid: ProcessTimes() for pid in pids}
 
