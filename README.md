@@ -85,7 +85,7 @@ Average response time: 2.75
 ### (3) Convert Input Lists to Input File
 
 
-Alternatively, it's much easier to write test cases directly into the online solver instead of filling out a new processes.txt. I also provide a [from_solver](from_solver) script that converts the space-separated input lists into a file in a format ready to be loaded by ./rr:
+Alternatively, it's much easier to write test cases directly into the online solver instead of filling out a new processes.txt. I also provide a [from_solver](from_solver) script that converts the space-separated input lists a format recognized by ./rr:
 
 ```console
 $ ./from_solver '0 2 4 5' '7 4 1 4'
@@ -103,7 +103,7 @@ $ ./rr my_test_case.txt 3
 ### (4) Generate Random Test Cases!
 
 
-Instead of keyboard mashing to create your own test cases, you can use my [generate.py](generate.py) script to generate random but valid lists of arrival and burst times. They are outputted in the [same format at to_solver](#1-convert-input-file-to-input-lists):
+Instead of keyboard mashing to create your own test cases, you can use my [generate.py](generate.py) script to generate random but valid lists of arrival and burst times. They are outputted in the [same format as to_solver](#1-convert-input-file-to-input-lists):
 
 ```console
 $ ./generate.py
