@@ -20,5 +20,5 @@ sep=' *, *'
 arrivals=$(echo "$entries" | awk -F "$sep" 'BEGIN {ORS=" "} {print $2}')
 bursts=$(echo "$entries" | awk -F "$sep" 'BEGIN {ORS=" "} {print $3}')
 
-echo "Arrival Times: ${arrivals}" | tr -d ","
-echo "  Burst Times: ${bursts}"
+echo "$arrivals" | tr -d ","
+echo "$bursts"

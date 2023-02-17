@@ -56,8 +56,8 @@ Your workflow can look like this:
 
 ```console
 $ ./to_solver processes.txt
-Arrival Times: 0 2 4 5
-  Burst Times: 7 4 1 4
+0 2 4 5
+7 4 1 4
 ```
 
 
@@ -101,16 +101,16 @@ Instead of keyboard mashing to create your own test cases, you can use my [gener
 
 ```console
 $ ./generate.py
-Arrival times: 6 1 13 3
-  Burst times: 11 11 8 3
+6 1 13 3
+11 11 8 3
 ```
 
 The script supports some options, like customizing the number of entries (default 4), the allowed range for arrival and burst times (default 0-20 and 1-20 respectively), and saving a copy as a file in a format ready to be loaded by ./rr:
 
 ```console
 $ ./generate.py 6 -a 20-50 -b 1-30 -o my_test_case.txt
-Arrival times: 40 40 27 38 26 22
-  Burst times: 28 14 29 7 19 2
+40 40 27 38 26 22
+28 14 29 7 19 2
 $ cat my_test_case.txt
 6
 1, 40, 28

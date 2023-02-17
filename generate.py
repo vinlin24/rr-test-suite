@@ -93,8 +93,8 @@ def main() -> None:
     arrival_times = get_random_times(num, arrival_lower, arrival_upper)
     burst_times = get_random_times(num, burst_lower, burst_upper)
 
-    print(f"Arrival times: {' '.join(str(time) for time in arrival_times)}")
-    print(f"  Burst times: {' '.join(str(time) for time in burst_times)}")
+    print(" ".join(str(time) for time in arrival_times))
+    print(" ".join(str(time) for time in burst_times))
 
     output_path = namespace.output
     if output_path is not None:
