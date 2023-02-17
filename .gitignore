@@ -3,6 +3,3 @@ __pycache__/
 
 # Data files
 *.txt
-
-# Distribution files created with make
-dist/

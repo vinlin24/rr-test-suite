@@ -6,5 +6,10 @@ TAR_ARGS = -czvf ${OUTPUT_PATH}
 
 tarball: ${OUTPUT_PATH}
 
-${OUTPUT_PATH}:
-	tar ${TAR_ARGS} ${PYTHON_SCRIPTS} ${BASH_SCRIPTS}
+${OUTPUT_PATH}: ${PYTHON_SCRIPTS} ${BASH_SCRIPTS}
+	tar ${TAR_ARGS} $^
+
+.PHONY: clean
+
+clean:
+	@rm -rf __pycache__ dist/*
