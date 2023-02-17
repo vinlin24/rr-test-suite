@@ -38,6 +38,16 @@ def is_round_robin(raw_text: str) -> bool:
     return match is not None
 
 
+def get_num_processes(raw_text: str) -> int:
+    """Extract the number of entries from copy-pasted text."""
+    # Example line:
+    # Average	5587 / 30 = 186.233	5284 / 30 = 176.133
+    match = re.search(r"^Average\s+\d+ / (\d+).+$", raw_text, re.MULTILINE)
+    if match is None:
+        raise ValueError("Could not find Average table entry in string.")
+    return int(match.group(1))
+
+
 def extract_gantt_and_table(raw_text: str) -> Tuple[str, str]:
     """
     Parse the raw text gotten from copy-and-pasting the result of Ctrl+A
