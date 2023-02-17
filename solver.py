@@ -16,7 +16,7 @@ after running the solver.
 import sys
 from dataclasses import dataclass
 from html.parser import HTMLParser
-from typing import List, Literal, Optional, Tuple
+from typing import Dict, List, Literal, Optional, Tuple
 
 __author__ = "Vincent Lin"
 
@@ -97,6 +97,79 @@ class GanttChartParser(HTMLParser):
         return self.times
 
 
+class OutputTableParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.in_tbody = False
+        self.in_tr = False
+        self.in_td = False
+
+        self.tds_in_tr_encountered = 0
+        self.average_found = False
+        self.turnaround_found = False
+
+        self.current_pid: Optional[str] = None
+        self.average_waiting_time = float("inf")
+        self.arrival_times: Dict[str, int] = {}
+
+    def handle_starttag(self, tag: str, attrs: AttrsList) -> None:
+        # There should be exactly one <tbody>, that of the output table.
+        if tag == "tbody":
+            self.in_tbody = True
+        elif tag == "tr":
+            self.in_tr = True
+        elif tag == "td":
+            self.in_td = True
+            self.tds_in_tr_encountered += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        # Check inner -> outer to see which endtag we just encountered.
+        if tag == "td":
+            self.in_td = False
+        elif tag == "tr":
+            self.in_tr = False
+            self.tds_in_tr_encountered = 0  # Reset.
+        elif tag == "tbody":
+            self.in_tbody = False
+
+    def handle_data(self, data: str) -> None:
+        if not self.in_td:
+            return
+
+        # Handle the special last row (averages).
+        if data == "Average":
+            self.average_found = True
+            return
+        if self.average_found:
+            # Average waiting time comes after the one for turnaround.
+            if self.turnaround_found:
+                self.average_waiting_time = float(data.split()[-1])
+            else:
+                self.turnaround_found = True
+            return
+
+        # PID is field $1.
+        if self.tds_in_tr_encountered == 1:
+            self.current_pid = data
+
+        # Arrival Time is field $2.
+        elif self.tds_in_tr_encountered == 2:
+            if self.current_pid is None:
+                raise ValueError(
+                    "Unexpectedly unable to get the PID "
+                    "for a process in the output table.")
+            # Write and reset.
+            self.arrival_times[self.current_pid] = int(data)
+            self.current_pid = None
+
+    def get_arrival_times(self) -> Dict[str, int]:
+        return self.arrival_times
+
+    def get_average_waiting_time(self) -> float:
+        return self.average_waiting_time
+
+
 @dataclass(init=False)
 class ProcessTimes:
     """Convenience struct for bundling a process' relevant times."""
@@ -163,6 +236,14 @@ def main() -> None:
 
     print(pids)
     print(times)
+
+    table_parser = OutputTableParser()
+    table_parser.feed(raw_html)
+    arrival_times = table_parser.get_arrival_times()
+    avg_waiting_time = table_parser.get_average_waiting_time()
+
+    print(arrival_times)
+    print(avg_waiting_time)
 
     return  # TODO.
     process_times = get_process_times(pids, times, table_string)
