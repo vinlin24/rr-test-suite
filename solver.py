@@ -9,8 +9,7 @@ https://boonsuen.com/process-scheduling-solver.  The output format is
 identical to what should be outputted by a correct rr.c implementation.
 
 USAGE: `./solver.py FILENAME`, where FILENAME is the name of the file
-into which you Ctrl+A and Ctrl+C Ctrl+V the contents of the webpage
-after running the solver.
+into which you paste the HTML of the solver webpage.
 """
 
 import sys
