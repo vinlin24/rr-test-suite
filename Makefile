@@ -1,5 +1,5 @@
 PYTHON_SCRIPTS := $(wildcard *.py)
-BASH_SCRIPTS := init.sh from_solver to_solver
+BASH_SCRIPTS := from_solver to_solver
 
 OUTPUT_PATH = dist/test_suite.tgz
 TAR_ARGS = -czvf ${OUTPUT_PATH}
