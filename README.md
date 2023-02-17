@@ -81,6 +81,20 @@ Average waiting time: 7.00
 Average response time: 2.75
 ```
 
+After preparing the output HTML, you can also use the convenience script [check](check) to directly compare the output of your ./rr and what would be produced according to the online solver. Note that the quantum length has to match what you inputted in the online solver because that's what drove the output you saved into your HTML file.
+
+```console
+$ ./check 5 processes.txt output.html
+Checking your rr against input_file='processes.txt' and solver_html='output.html' for quantum_length=5:
+Output doesn't match! (-SOLVER +YOURS)
+
+@@ -1,2 +1,2 @@
+-Average waiting time: 7.00
+-Average response time: 2.75
++Average waiting time: 5.50
++Average response time: 3.25
+```
+
 
 ### (3) Convert Input Lists to Input File
 

@@ -1,5 +1,5 @@
 PYTHON_SCRIPTS := $(wildcard *.py)
-OTHER_SCRIPTS := from_solver to_solver copyHTML.js
+OTHER_SCRIPTS := from_solver to_solver check copyHTML.js
 
 OUTPUT_PATH = dist/test_suite.tgz
 TAR_ARGS = -czvf ${OUTPUT_PATH}

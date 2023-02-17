@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# USAGE: ./check QUANTUM_LENGTH [INPUT_FILE] [SOLVER_HTML]
+
+# Convenience script for directly comparing the output of your rr and that of
+# what the online solver produces (through my solver.py script).
+
+if [ $# -lt 1 ]; then
+    echo >&2 "USAGE: $0 QUANTUM_LENGTH [INPUT_FILE] [SOLVER_HTML]"
+    echo >&2 -n "NOTE: INPUT_FILE='processes.txt' and "
+    echo >&2 "SOLVER_HTML='output.html' if omitted."
+    exit 1
+fi
+
+quantum_length=$1
+input_file=$2
+solver_html=$3
+
+BLACK=$(tput setaf 0)
+END=$(tput sgr0)
+
+if [ -z "$input_file" ]; then
+    input_file='processes.txt'
+fi
+if [ -z "$solver_html" ]; then
+    solver_html='output.html'
+fi
+
+echo -n "${BLACK}Checking your rr against input_file='${input_file}' and "
+echo "solver_html='${solver_html}' for quantum_length=${quantum_length}:${END}"
+
+rr_output=$(./rr "$input_file" $quantum_length)
+rr_code=$?
+if [ $rr_code -ne 0 ]; then
+    echo >&2 "Your rr exited with nonzero exit code ${rr_code}."
+    exit 1
+fi
+
+solver_output=$(./solver.py output.html)
+solver_code=$?
+if [ $solver_code -ne 0 ]; then
+    echo >&2 "The solver script exited with nonzero exit code ${solver_code}."
+    exit 1
+fi
+
+diffs=$(diff -u --color=always <(echo "$solver_output") <(echo "$rr_output"))
+
+if [ -z "$diffs" ]; then
+    echo "${BLACK}Output matches!${END}"
+    echo
+    echo "$rr_output"
+else
+    echo >&2 "${BLACK}Output doesn't match! (-SOLVER +YOURS)${END}"
+    echo >&2
+    echo "$diffs" | tail >&2 -n +3
+    exit 1
+fi
