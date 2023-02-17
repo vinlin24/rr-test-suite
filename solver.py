@@ -16,7 +16,7 @@ after running the solver.
 import re
 import sys
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Set, Tuple
 
 __author__ = "Vincent Lin"
 
@@ -82,7 +82,46 @@ def extract_gantt_and_table(raw_text: str) -> Tuple[str, str]:
 
 def parse_gantt_chart(gantt_chart: str, num_entries: int
                       ) -> Tuple[List[str], List[int]]:
-    return ([], [])  # TODO.
+    gantt_tokens = gantt_chart.splitlines()
+
+    pids: List[str] = []
+    times: List[int] = []
+
+    # The PIDs become numbers starting from 10, 11, ... after Z
+    numeric_pids: Set[str] = set()
+    for offset in range(num_entries - 26):
+        numeric_pids.add(str(10 + offset))
+
+    # Determine which token is a PID and which is a time
+    for token in gantt_tokens:
+        # Ambiguous, some tricks are needed
+
+        if token in numeric_pids:
+            # If we're already past its value in time, then this token
+            # can't be a time.
+            if times and times[-1] >= int(token):
+                pids.append(token)
+
+        # Obvious cases
+
+        # The "PID" is "_" for slots where no process is executing
+        elif token == "_":
+            # TODO: Somehow discard the start time for _...
+            pass
+        elif token.isalpha():
+            pids.append(token)
+        elif token.isnumeric():
+            time = int(token)
+            # Times can repeat if the chart wraps around, but we need to
+            # make sure there are no duplicates.
+            if not times or times[-1] != time:
+                times.append(time)
+        else:
+            raise ValueError(
+                f"Invalid token found while parsing Gantt Chart: {token!r}.")
+
+
+    return (pids, times)
 
 
 def get_process_times(pids: List[str], times: List[int], table_string: str
