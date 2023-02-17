@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# USAGE: ./from_solver 'ARRIVAL TIMES HERE' 'BURST TIMES HERE' > FILENAME
+
+# Script for converting a space separated list of arrival times and burst times
+# to the format of processes.txt, ready to be parsed by the init_processes
+# function of rr.c.  The space separated lists are what you would input to the
+# online scheduling solver: https://boonsuen.com/process-scheduling-solver
+
+if [ $# -lt 2 ]; then
+    echo >&2 "USAGE: $0 'ARRIVAL TIMES HERE' 'BURST TIMES HERE'"
+    exit 1
+fi
+
+arrival_times=($1)
+burst_times=($2)
+
+num_arrivals=${#arrival_times[@]}
+num_bursts=${#burst_times[@]}
+
+if [ $num_arrivals -ne $num_bursts ]; then
+    echo >&2 -n "Oops! Looks like you don't have the same number of arrivals "
+    echo >&2 -n "(${num_arrivals}) and bursts (${num_bursts}). Check if you "
+    echo >&2 "copied your inputs correctly."
+    exit 1
+fi
+
+# First line is number of entries
+echo $num_arrivals
+
+for i in $(seq 0 $((num_arrivals - 1))); do
+    pid=$((i + 1)) # Start counting from 1
+    arrival_time=${arrival_times[$i]}
+    burst_time=${burst_times[$i]}
+    echo "${pid}, ${arrival_time}, ${burst_time}"
+done

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# USAGE: ./to_solver FILENAME
+
+# Script for converting an input file into space separated lists of arrival
+# times and burst times for easier copy-and-paste into the online process
+# scheduling solver: https://boonsuen.com/process-scheduling-solver
+
+if [ $# -lt 1 ]; then
+    echo >&2 "USAGE: $0 FILENAME"
+    exit 1
+fi
+
+filename="$1"
+entries=$(tail +2 "$filename")
+
+# Regex to match commas with arbitrary whitespace around them as the delimiter
+sep=' *, *'
+
+arrivals=$(echo "$entries" | awk -F "$sep" 'BEGIN {ORS=" "} {print $2}')
+bursts=$(echo "$entries" | awk -F "$sep" 'BEGIN {ORS=" "} {print $3}')
+
+echo "Arrival Times: ${arrivals}" | tr -d ","
+echo "  Burst Times: ${bursts}"
