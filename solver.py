@@ -29,6 +29,15 @@ class ProcessTimes:
     waiting_time: int
 
 
+def is_round_robin(raw_text: str) -> bool:
+    """
+    Return whether the text shows that "Round-Robin, RR" was selected as
+    the algorithm.
+    """
+    match = re.search(r"^Round-Robin, RR$", raw_text, re.MULTILINE)
+    return match is not None
+
+
 def extract_gantt_and_table(raw_text: str) -> Tuple[str, str]:
     """
     Parse the raw text gotten from copy-and-pasting the result of Ctrl+A
@@ -118,6 +127,11 @@ def main() -> None:
     filename = sys.argv[1]
     with open(filename, "rt", encoding="utf-8") as fp:
         raw_text = fp.read()
+
+    if not is_round_robin(raw_text):
+        sys.stderr.write(
+            "It looks like you didn't select the Round-Robin algorithm!\n")
+        sys.exit(1)
 
     gantt_chart, table_string = extract_gantt_and_table(raw_text)
     process_times = get_process_times(gantt_chart, table_string)
