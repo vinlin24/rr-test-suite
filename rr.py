@@ -61,7 +61,7 @@ class process_list_t:
         return f"{class_name}({content})"
 
     def __iter__(self) -> Iterator[process_t]:
-        """Implement for-in iteration to simular TAILQ_FOREACH."""
+        """Implement for-in iteration to simulate TAILQ_FOREACH."""
         return iter(self._queue)
 
     def empty(self) -> bool:
